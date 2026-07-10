@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>AMS Toolkit</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f0f4f8;min-height:100vh;padding:24px 16px;color:#1a1a2e}
+.page{max-width:700px;margin:0 auto}
+.wrap{background:#fff;border-radius:12px;box-shadow:0 2px 16px rgba(0,0,0,0.10);overflow:hidden}
+.hdr{background:#003865;color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center}
+.hdr-title{font-size:15px;font-weight:500}
+.hdr-sub{font-size:12px;opacity:0.6;margin-top:2px}
+.hdr-badge{font-size:11px;font-weight:500;color:#C8102E;background:#fff;padding:3px 8px;border-radius:4px;letter-spacing:0.05em}
+.body{border:0.5px solid #e2e8f0;border-top:none}
+.sec{padding:16px 20px;border-bottom:0.5px solid #e2e8f0}
+.sec:last-child{border-bottom:none}
+.sec-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:#64748b;margin-bottom:12px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.field{display:flex;flex-direction:column;gap:4px}
+.lbl{font-size:12px;color:#64748b}
+input[type=text],select{width:100%;font-size:13px;border:1px solid #cbd5e1;border-radius:6px;padding:6px 8px;background:#fff;color:#1a1a2e;outline:none}
+input[type=text]:focus,select:focus{border-color:#003865}
+.tog-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0}
+.tog-lbl{font-size:13px;color:#1a1a2e}
+.tog{position:relative;display:inline-block;width:34px;height:18px;flex-shrink:0}
+.tog input{opacity:0;width:0;height:0}
+.tslider{position:absolute;inset:0;background:#cbd5e1;border-radius:18px;transition:.2s}
+.tslider:before{position:absolute;content:"";width:12px;height:12px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s}
+.tog input:checked+.tslider{background:#003865}
+.tog input:checked+.tslider:before{transform:translateX(16px)}
+.cat-hdr{font-size:12px;font-weight:500;color:#64748b;padding:8px 0 4px;border-bottom:0.5px solid #e2e8f0;margin-bottom:6px}
+.prod-row{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:0.5px solid #f1f5f9;flex-wrap:wrap}
+.prod-row:last-child{border-bottom:none}
+.prod-chk{margin-top:2px;flex-shrink:0;accent-color:#003865;width:14px;height:14px;cursor:pointer}
+.prod-info{flex:1;min-width:160px}
+.prod-name{font-size:13px;font-weight:500;color:#1a1a2e}
+.prod-rate{font-size:11px;color:#64748b;margin-top:1px}
+.prod-ctrl{display:flex;align-items:center;gap:6px;flex-shrink:0;flex-wrap:wrap}
+.prod-ctrl select,.prod-ctrl input[type=number]{font-size:12px;border:1px solid #cbd5e1;border-radius:6px;padding:4px 6px;background:#fff}
+.prod-ctrl input[type=number]{width:68px}
+.clbl{font-size:11px;color:#64748b}
+.cval{font-size:11px;color:#003865;font-weight:500}
+.mpills{display:flex;flex-wrap:wrap;gap:4px;width:100%;padding-top:4px}
+.mpill{font-size:11px;padding:2px 8px;border-radius:20px;cursor:pointer;border:0.5px solid #cbd5e1;color:#64748b;background:transparent;user-select:none}
+.mpill.on{background:#003865;color:#fff;border-color:#003865}
+.calopt{display:flex;align-items:flex-start;gap:6px;padding:3px 0}
+.calopt input[type=checkbox]{margin-top:2px;flex-shrink:0;accent-color:#003865}
+.calopt label{font-size:11px;color:#64748b;cursor:pointer;line-height:1.45;white-space:normal}
+.topic-row{display:flex;flex-direction:column;gap:3px;width:100%;padding-top:5px}
+.topic-row .clbl{font-size:11px;color:#64748b}
+.topic-input{width:100%;font-size:12px;border:1px solid #cbd5e1;border-radius:6px;padding:5px 8px;background:#fff;color:#1a1a2e}
+.topic-input:focus{outline:none;border-color:#003865}
+.send-entry{display:flex;flex-direction:column;gap:4px;width:100%;padding:6px 0 2px;border-bottom:0.5px solid #e2e8f0}
+.send-entry:last-child{border-bottom:none}
+.send-entry-hdr{display:flex;align-items:center;gap:6px}
+.send-del{font-size:11px;color:#94a3b8;cursor:pointer;border:none;background:none;padding:0 2px;margin-left:auto}
+.send-del:hover{color:#C8102E}
+.add-send-btn{font-size:11px;color:#003865;cursor:pointer;border:0.5px solid #003865;background:transparent;border-radius:6px;padding:3px 10px;margin-top:5px}
+.add-send-btn:hover{background:#E6F1FB}
+.foot{background:#003865;color:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}
+.total-lbl{font-size:12px;opacity:0.65}
+.total-amt{font-size:19px;font-weight:500}
+.build-btn{background:#C8102E;color:#fff;border:none;padding:8px 18px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;letter-spacing:0.02em}
+.build-btn:hover{background:#a60f26}
+.price-row{display:flex;align-items:center;gap:6px;width:100%;padding-top:5px}
+.price-row .clbl{font-size:11px;color:#64748b;white-space:nowrap}
+.price-override{width:90px;font-size:12px;border:1px solid #cbd5e1;border-radius:6px;padding:4px 7px;background:#fff;color:#1a1a2e}
+.price-override:focus{outline:none;border-color:#003865}
+.price-std{font-size:11px;color:#94a3b8;text-decoration:line-through}
+
+/* Copy modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:24px;max-width:560px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.18)}
+.modal h2{font-size:15px;font-weight:600;color:#003865;margin-bottom:6px}
+.modal p{font-size:13px;color:#64748b;margin-bottom:14px;line-height:1.5}
+.modal-steps{font-size:13px;color:#1a1a2e;margin-bottom:16px;display:flex;flex-direction:column;gap:8px}
+.modal-step{display:flex;align-items:flex-start;gap:10px}
+.step-num{background:#003865;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-top:1px}
+.copy-btn{background:#003865;color:#fff;border:none;padding:10px 20px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;width:100%;margin-bottom:8px}
+.copy-btn:hover{background:#002a4d}
+.copy-btn.copied{background:#16a34a}
+.modal-close{font-size:12px;color:#94a3b8;background:none;border:none;cursor:pointer;width:100%;text-align:center;padding:4px}
+.modal-close:hover{color:#64748b}
+.instructions{background:#f8fafc;border-radius:8px;padding:14px 16px;margin-bottom:16px;border:1px solid #e2e8f0}
+.instructions-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#003865;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div style="text-align:center;margin-bottom:16px">
+  <img src="https://www.edweek.org/media/edweek-logo.svg" height="28" alt="EdWeek" onerror="this.style.display='none'">
+</div>
+
+<div class="wrap">
+<div class="hdr">
+  <div><div class="hdr-title">EdWeek Proposal Builder <span style="font-size:10px;opacity:0.5;font-weight:400">v2.0</span></div><div class="hdr-sub">Marketing Solutions — Advertising Sales</div></div>
+  <div class="hdr-badge">EdWeek</div>
+</div>
+<div class="body">
+
+<div class="sec">
+  <div class="sec-title">Campaign Info</div>
+  <div class="g2" style="margin-bottom:10px">
+    <div class="field"><span class="lbl">Client / Company</span><input type="text" id="f-client" placeholder="e.g. Lexia Learning"></div>
+    <div class="field"><span class="lbl">Rep Name</span>
+      <select id="f-rep-sel" onchange="toggleRepOther()">
+        <option value="Daniel Criner">Daniel Criner</option>
+        <option value="Valerie Saba Wettlaufer">Valerie Saba Wettlaufer</option>
+        <option value="Guy Blumberg">Guy Blumberg</option>
+        <option value="Julie Fagan">Julie Fagan</option>
+        <option value="Josh Ford">Josh Ford</option>
+        <option value="other">Other…</option>
+      </select>
+      <input type="text" id="f-rep-other" placeholder="Full name" style="display:none;margin-top:4px">
+    </div>
+  </div>
+  <div class="g3">
+    <div class="field"><span class="lbl">Campaign Start</span><select id="f-start"></select></div>
+    <div class="field"><span class="lbl">Duration</span>
+      <select id="f-dur">
+        <option value="3">3 months</option>
+        <option value="6" selected>6 months</option>
+        <option value="12">12 months</option>
+      </select>
+    </div>
+    <div class="field"><span class="lbl">Budget (optional)</span><input type="text" id="f-budget" placeholder="e.g. $75,000"></div>
+  </div>
+  <div class="tog-row" style="margin-top:10px">
+    <span class="tog-lbl">Include intro slides (2–17)</span>
+    <label class="tog"><input type="checkbox" id="f-intro" checked><span class="tslider"></span></label>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-title">Select Products</div>
+  <div class="cat-hdr">Lead Generation &amp; Events</div><div id="c-events"></div>
+  <div class="cat-hdr" style="margin-top:8px">Content &amp; Brand</div><div id="c-content"></div>
+  <div class="cat-hdr" style="margin-top:8px">Newsletters &amp; Email</div><div id="c-nl"></div>
+  <div class="cat-hdr" style="margin-top:8px">Print</div><div id="c-print"></div>
+  <div class="cat-hdr" style="margin-top:8px">Display / CPM</div><div id="c-cpm"></div>
+</div>
+
+</div>
+<div class="foot">
+  <div><div class="total-lbl">Estimated Investment</div><div class="total-amt" id="f-total">$0</div></div>
+  <button class="build-btn" onclick="submit()">Build Proposal ↗</button>
+</div>
+</div>
+
+</div><!-- /page -->
+
+<!-- Copy Modal -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h2>🎉 Almost there!</h2>
+    <p>Your proposal selections are ready. Follow these 4 steps:</p>
+    <div class="instructions">
+      <div class="instructions-title">What to do next</div>
+      <div class="modal-steps">
+        <div class="modal-step"><div class="step-num">1</div><div><a href="https://editproj.sharepoint.com/sites/AMS/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FAMS%2FShared%20Documents%2FMedia%20Kit%20%2B%20Slides%2FFull%20Media%20Kit%2FFull%20Media%20Kit&viewid=9da36c4d%2D292e%2D4c4b%2D84c7%2Dee28d8b81719" target="_blank" style="color:#C8102E;font-weight:600">Open the Media Kit folder →</a> Sort by Modified date, download the newest .pptx to your Desktop.</div></div>
+        <div class="modal-step"><div class="step-num">2</div><div>Click <strong>Copy to Clipboard</strong> below.</div></div>
+        <div class="modal-step"><div class="step-num">3</div><div>Open the <strong>AI-Powered Sales Decks/Proposals project</strong> in Claude. Start a new chat. Paste what you copied into the message box — <em>but don't send yet.</em></div></div>
+        <div class="modal-step"><div class="step-num">4</div><div>Click the <strong>paperclip icon</strong> to attach the Media Kit .pptx you downloaded, then hit send. Claude will build your proposal (takes ~2–3 minutes).</div></div>
+      </div>
+    </div>
+    <button class="copy-btn" id="copy-btn" onclick="copyPayload()">Copy to Clipboard</button>
+    <button class="modal-close" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script>
+// Dynamic month range: 15 months starting from the current month.
+// Refreshed on every page load, so the widget stays evergreen.
+const MK=[], ML=[];
+(function buildMonthRange(){
+  const MN=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const now=new Date();
+  const startY=now.getFullYear();
+  const startM=now.getMonth();
+  for(let i=0;i<15;i++){
+    const d=new Date(startY,startM+i,1);
+    const y=d.getFullYear();
+    const m=d.getMonth();
+    MK.push(`${y}-${String(m+1).padStart(2,"0")}`);
+    ML.push(`${MN[m]} '${String(y).slice(2)}`);
+  }
+})();
+const ml=k=>ML[MK.indexOf(k)]||k;
+
+const CAL={
+  forum:[
+    {m:"2026-05",d:"May 21, 2026",t:"Middle and High School Math: How to Get Struggling Learners on Track"},
+    {m:"2026-06",d:"June 18, 2026",t:"Professional Development That Delivers on Its Promise"},
+    {m:"2026-07",d:"July 9, 2026",t:"The State of Teaching: A Detailed Report on the Health of the Profession"},
+    {m:"2026-10",d:"Oct 1, 2026",t:"English Learners: Paths to Success"},
+    {m:"2026-11",d:"Nov 5, 2026",t:"Engagement and Motivation in Reading"},
+    {m:"2026-12",d:"Dec 10, 2026",t:"Professional Development: Preparing Teachers for an AI-Infused World"},
+    {m:"2027-02",d:"Feb 4, 2027",t:"Student Well-Being: New Challenges and Opportunities"},
+    {m:"2027-03",d:"Mar 4, 2027",t:"Where Do Career-Tech Education and Core Academics Intersect?"},
+    {m:"2027-05",d:"May 20, 2027",t:"Case Studies in School-Based AI (annual Technology Counts)"},
+    {m:"2027-06",d:"June 24, 2027",t:"Strategies to Support Special Education Students"},
+    {m:"2027-07",d:"July 15, 2027",t:"Essential Math: Practical Strategies That Work"},
+  ],
+  edweb:[
+    {m:"2026-05",d:"May (TBD), 2026",t:"Make Schools Active: Using Movement to Foster Engagement and Learning"},
+    {m:"2026-06",d:"June 17, 2026",t:"The Rewiring of Childhood with Jonathan Haidt"},
+    {m:"2026-06",d:"June (TBD), 2026",t:"Making Computer Science for All Students a Reality"},
+    {m:"2026-08",d:"Aug (TBD), 2026",t:"The Future of K-12 Funding: What Changes Are Coming to School Budgets?"},
+    {m:"2026-09",d:"Sep (TBD), 2026",t:"How Principals Can Support Teachers in Managing Student Behavior"},
+    {m:"2026-10",d:"Oct (TBD), 2026",t:"Special Education Support for English Learners"},
+    {m:"2026-11",d:"Nov (TBD), 2026",t:"The Growth of Private School Choice: Implications for Public School Funding"},
+    {m:"2027-01",d:"Jan (TBD), 2027",t:"The Skills That Predict Student Success in Algebra"},
+    {m:"2027-02",d:"Feb (TBD), 2027",t:"Why the Science of Reading Is About More Than Just Phonics"},
+    {m:"2027-03",d:"Mar (TBD), 2027",t:"Federal Policy Update: Key Developments That Will Affect the Work of K-12 Schools"},
+    {m:"2027-03",d:"Mar (TBD), 2027",t:"Play-Based Learning in Early Grades: How It Can Help Young Students Thrive"},
+    {m:"2027-04",d:"Apr (TBD), 2027",t:"What's Working in Supporting English Learners?"},
+    {m:"2027-05",d:"May (TBD), 2027",t:"Are Books Losing Their Place in American Classrooms?"},
+  ],
+  sr:[
+    {m:"2026-05",d:"May 4, 2026",t:"Middle and High School Math: How to Get Struggling Learners on Track"},
+    {m:"2026-05",d:"May 18, 2026",t:"Professional Development That Delivers on Its Promise"},
+    {m:"2026-08",d:"Aug 3, 2026",t:"Preparing for a New School Year: 5 Key Issues for District Leaders to Watch"},
+    {m:"2026-09",d:"Sep 8, 2026",t:"Big Ideas in Education"},
+    {m:"2026-09",d:"Sep 21, 2026",t:"English Learners: Paths to Success"},
+    {m:"2026-10",d:"Oct 19, 2026",t:"Engagement and Motivation in Reading"},
+    {m:"2026-11",d:"Nov 16, 2026",t:"Professional Development: Preparing Teachers for an AI-Infused World"},
+    {m:"2027-01",d:"Jan 25, 2027",t:"Student Well-Being: New Challenges and Opportunities"},
+    {m:"2027-02",d:"Feb 8, 2027",t:"District Leaders To Learn From (annual)"},
+    {m:"2027-02",d:"Feb 22, 2027",t:"Where Do Career-Tech Education and Core Academics Intersect?"},
+    {m:"2027-03",d:"Mar 8, 2027",t:"The State of Teaching (annual)"},
+    {m:"2027-04",d:"Apr 19, 2027",t:"Case Studies in School-Based AI (annual Technology Counts)"},
+    {m:"2027-05",d:"May 3, 2027",t:"Essential Math: Practical Strategies That Work"},
+    {m:"2027-05",d:"May 24, 2027",t:"Strategies to Support Special Education Students"},
+  ],
+  vid:[
+    {m:"2026-05",d:"May (TBD), 2026",t:"AI and Social-Emotional Learning"},
+    {m:"2026-05",d:"May (TBD), 2026",t:"Inside the New National Academy for AI Instruction"},
+    {m:"2026-06",d:"June (TBD), 2026",t:"Early Learning Video Series"},
+    {m:"2026-06",d:"June (TBD), 2026",t:"Crafting AI Policies 2-Minute Explainer"},
+    {m:"2026-07",d:"July 13, 2026",t:"How Can Districts Support Special Education Teachers (3 videos)"},
+    {m:"2026-08",d:"Aug 3, 2026",t:"Preparing for a New School Year: 5 Key Issues for District Leaders to Watch"},
+    {m:"2026-08",d:"Aug (TBD), 2026",t:"Climate Futures: How Schools Are Adapting to Climate Change"},
+    {m:"2026-09",d:"Sep 8, 2026",t:"Big Ideas in Education"},
+    {m:"2026-09",d:"Sep 21, 2026",t:"English Learners: Paths to Success"},
+    {m:"2026-10",d:"Oct 19, 2026",t:"Engagement and Motivation in Reading"},
+    {m:"2026-11",d:"Nov 16, 2026",t:"Professional Development: Preparing Teachers for an AI-Infused World"},
+    {m:"2026-12",d:"Dec 7, 2026",t:"How Are Public School Districts Marketing Themselves to Parents? (3 videos)"},
+    {m:"2027-01",d:"Jan 25, 2027",t:"Student Well-Being: New Challenges and Opportunities"},
+    {m:"2027-02",d:"Feb 8, 2027",t:"District Leaders To Learn From (annual)"},
+    {m:"2027-02",d:"Feb 22, 2027",t:"Where Do Career-Tech Education and Core Academics Intersect?"},
+    {m:"2027-03",d:"Mar 8, 2027",t:"The State of Teaching (annual)"},
+    {m:"2027-04",d:"Apr 19, 2027",t:"Case Studies in School-Based AI (annual Technology Counts)"},
+    {m:"2027-05",d:"May 3, 2027",t:"Essential Math: Practical Strategies That Work"},
+    {m:"2027-05",d:"May 24, 2027",t:"Strategies to Support Special Education Students"},
+  ]
+};
+
+const PRODS=[
+  {cat:"events",id:"forum",name:"K-12 Essentials Forum",type:"P",pricing:"flat",rate:17500,rl:"$17,500/event",slides:[20,21,22,23,24,25],cal:"forum"},
+  {cat:"events",id:"edweb",name:"Editorial Webinar / Live Online Discussion",type:"P",pricing:"flat",rate:20000,rl:"$20,000/event",slides:[28,29],cal:"edweb"},
+  {cat:"events",id:"adweb",name:"Advertorial Webinar",type:"P",pricing:"flat",rate:20000,rl:"$20,000/event",slides:[31],cal:null},
+  {cat:"events",id:"wp",name:"Whitepaper Sponsorship",type:"D",pricing:"flat",rate:10000,rl:"$10,000/program",slides:[55],cal:null},
+  {cat:"events",id:"spot",name:"Spotlight Sponsorship",type:"D",pricing:"flat",rate:15000,rl:"$15,000/campaign",slides:[58,59,60],cal:null},
+  {cat:"events",id:"quiz",name:"Sponsored Quiz",type:"P",pricing:"flat",rate:12500,rl:"$12,500/quiz",slides:[56,57],cal:null},
+  {cat:"content",id:"sr",name:"Special Report Sponsorship",type:"P",pricing:"flat",rate:20000,rl:"$20,000/report",slides:[35,36,37,38],cal:"sr"},
+  {cat:"content",id:"vid",name:"Video Sponsorship",type:"P",pricing:"flat",rate:7500,rl:"$7,500/video",slides:[66,67],cal:"vid"},
+  {cat:"content",id:"scp",name:"Sponsor Content Post",type:"P",pricing:"flat",rate:15000,rl:"$15,000/post",slides:[90],cal:null},
+  {cat:"content",id:"soc",name:"X (Twitter) Sponsorship",type:"D",pricing:"flat",rate:7500,rl:"$7,500/month",slides:[50],cal:null},
+  {cat:"nl",id:"ewu",name:"EdWeek Update E-Newsletter",type:"P",pricing:"flat",rate:3000,rl:"$3,000/issue",slides:[39,40],cal:null},
+  {cat:"nl",id:"tb",name:"Teacher Update E-Newsletter",type:"P",pricing:"flat",rate:3000,rl:"$3,000/issue",slides:[41],cal:null},
+  {cat:"nl",id:"pt",name:"Savvy Principal E-Newsletter",type:"P",pricing:"flat",rate:3000,rl:"$3,000/issue",slides:[42],cal:null},
+  {cat:"nl",id:"sdl",name:"Strategic District Leader E-Newsletter",type:"P",pricing:"flat",rate:3000,rl:"$3,000/issue",slides:[44],cal:null},
+  {cat:"nl",id:"etl",name:"EdWeek Tech Leader E-Newsletter",type:"P",pricing:"flat",rate:3000,rl:"$3,000/issue",slides:[45],cal:null},
+  {cat:"nl",id:"cur",name:"Curriculum Matters E-Newsletter",type:"P",pricing:"flat",rate:3000,rl:"$3,000/issue",slides:[47],cal:null},
+  {cat:"nl",id:"eml",name:"Content-Targeted Email Blast",type:"P",pricing:"flat",rate:10500,rl:"$10,500/send",slides:[54],cal:null},
+  {cat:"nl",id:"ebl",name:"Email Blast",type:"P",pricing:"flat",rate:10000,rl:"$10,000/send",slides:[53],cal:null},
+  {cat:"print",id:"pfp",name:"Print – Full Page Ad",type:"P",pricing:"flat",rate:8000,rl:"$8,000/issue",slides:[70,71,72,73],cal:null},
+  {cat:"print",id:"php",name:"Print – Half Page Ad",type:"P",pricing:"flat",rate:5000,rl:"$5,000/issue",slides:[70,71,72,73],cal:null},
+  {cat:"print",id:"pcw",name:"Print – Cover Wrap",type:"P",pricing:"flat",rate:25000,rl:"$25,000/issue",slides:[70,71,72,73],cal:null},
+  {cat:"cpm",id:"sbb",name:"Super Billboard Banner (970×415)",type:"D",pricing:"cpm",cpm:150,rl:"$150 CPM",slides:[81]},
+  {cat:"cpm",id:"bb",name:"Billboard Banner (970×250)",type:"D",pricing:"cpm",cpm:100,rl:"$100 CPM",slides:[82]},
+  {cat:"cpm",id:"hip",name:"High Impact Banner Program (600×250 / 300×600 / 300×250)",type:"D",pricing:"cpm",cpm:75,rl:"$75 CPM",slides:[83,84,85,86]},
+  {cat:"cpm",id:"int",name:"Interstitial Ad (640×480)",type:"D",pricing:"cpm",cpm:90,rl:"$90 CPM",slides:[88]},
+  {cat:"cpm",id:"ret",name:"Retargeting",type:"D",pricing:"cpm",cpm:50,rl:"$50 CPM",slides:[91,92,93]},
+  {cat:"cpm",id:"li",name:"Enhanced LinkedIn Social Targeting",type:"D",pricing:"cpm",cpm:100,rl:"$100 CPM",slides:[52]},
+  {cat:"cpm",id:"fb",name:"Enhanced Facebook Social Targeting",type:"D",pricing:"cpm",cpm:75,rl:"$75 CPM",slides:[51]},
+];
+
+let sel={}, campMonths=[], pendingPayload='';
+
+function getMonths(){
+  const si=MK.indexOf(document.getElementById('f-start').value);
+  const dur=parseInt(document.getElementById('f-dur').value);
+  if(si<0)return[];
+  return MK.slice(si,Math.min(si+dur,MK.length));
+}
+
+function buildStartOpts(){
+  const s=document.getElementById('f-start');
+  MK.slice(0,13).forEach((k,i)=>{
+    const o=document.createElement('option');
+    o.value=k; o.textContent=ML[i];
+    if(i===0)o.selected=true;
+    s.appendChild(o);
+  });
+}
+
+function renderAll(){
+  campMonths=getMonths();
+  ['events','content','nl','print','cpm'].forEach(cat=>{
+    const el=document.getElementById('c-'+cat);
+    el.innerHTML='';
+    PRODS.filter(p=>p.cat===cat).forEach(p=>{
+      const wasOn=!!sel[p.id];
+      el.appendChild(buildRow(p,campMonths));
+      if(wasOn){
+        const chk=document.getElementById('chk-'+p.id);
+        if(chk){chk.checked=true; toggleProd(p,true,true);}
+      }
+    });
+  });
+  recalc();
+}
+
+function buildRow(p,months){
+  const row=document.createElement('div');
+  row.className='prod-row'; row.id='row-'+p.id;
+  const chk=document.createElement('input');
+  chk.type='checkbox'; chk.className='prod-chk'; chk.id='chk-'+p.id;
+  chk.onchange=e=>toggleProd(p,e.target.checked,false);
+  const info=document.createElement('div'); info.className='prod-info';
+  info.innerHTML=`<div class="prod-name">${p.name}</div><div class="prod-rate">${p.rl}</div>`;
+  row.appendChild(chk); row.appendChild(info);
+  return row;
+}
+
+function addPriceOverride(row,p,s){
+  const prow=document.createElement('div'); prow.className='price-row'; prow.id='price-'+p.id;
+  const lbl=document.createElement('span'); lbl.className='clbl';
+  if(p.pricing==='cpm'){
+    lbl.textContent='CPM override';
+    const inp=document.createElement('input'); inp.type='number'; inp.className='price-override';
+    inp.min=1; inp.step=1; inp.value=s.cpmOverride||p.cpm;
+    const std=document.createElement('span'); std.className='price-std'; std.textContent='$'+p.cpm+' CPM';
+    inp.oninput=()=>{
+      const v=parseFloat(inp.value)||p.cpm;
+      s.cpmOverride=v;
+      std.style.display=v===p.cpm?'none':'inline';
+      const imp=s.impressions||100000;
+      s.unitPrice=Math.round(imp*v/1000);
+      const calc=document.getElementById('calc-'+p.id);
+      if(calc) calc.textContent='= $'+s.unitPrice.toLocaleString();
+      recalc();
+    };
+    inp.oninput();
+    prow.append(lbl,inp,std);
+  } else {
+    lbl.textContent='Rate override';
+    const inp=document.createElement('input'); inp.type='number'; inp.className='price-override';
+    inp.min=0; inp.step=100; inp.value=s.rateOverride||p.rate||0;
+    const std=document.createElement('span'); std.className='price-std'; std.textContent='$'+(p.rate||0).toLocaleString();
+    inp.oninput=()=>{
+      const v=parseFloat(inp.value)||p.rate||0;
+      s.rateOverride=v; s.unitPrice=v;
+      std.style.display=v===(p.rate||0)?'none':'inline';
+      recalc();
+    };
+    inp.oninput();
+    prow.append(lbl,inp,std);
+  }
+  row.appendChild(prow);
+}
+
+function toggleProd(p,on,restore){
+  if(!on){delete sel[p.id]; recalc(); return;}
+  if(!restore) sel[p.id]={prod:p,instances:[],months:[],startMo:'',endMo:'',qty:1,impressions:0,unitPrice:p.rate||0};
+  const row=document.getElementById('row-'+p.id);
+  const old=document.getElementById('ctrl-'+p.id);
+  if(old)old.remove();
+  const ctrl=document.createElement('div');
+  ctrl.className='prod-ctrl'; ctrl.id='ctrl-'+p.id;
+
+  if(p.type==='D'){
+    const s=sel[p.id];
+    const ss=document.createElement('select'); ss.style.fontSize='12px'; ss.style.border='1px solid #cbd5e1'; ss.style.borderRadius='6px'; ss.style.padding='4px 6px';
+    const es=document.createElement('select'); es.style.fontSize='12px'; es.style.border='1px solid #cbd5e1'; es.style.borderRadius='6px'; es.style.padding='4px 6px';
+    campMonths.forEach(mk=>{
+      const l=ml(mk);
+      const o1=document.createElement('option'); o1.value=mk; o1.textContent=l; ss.appendChild(o1);
+      const o2=document.createElement('option'); o2.value=mk; o2.textContent=l; es.appendChild(o2);
+    });
+    if(campMonths.length){
+      const defaultEnd=p.id==='spot'
+        ? (campMonths[Math.min(2,campMonths.length-1)])
+        : campMonths[campMonths.length-1];
+      ss.value=s.startMo||campMonths[0]; es.value=s.endMo||defaultEnd;
+      s.startMo=ss.value; s.endMo=es.value;
+    }
+    ss.onchange=()=>{s.startMo=ss.value;recalc();};
+    es.onchange=()=>{s.endMo=es.value;recalc();};
+    const l1=document.createElement('span'); l1.className='clbl'; l1.textContent='Start';
+    const l2=document.createElement('span'); l2.className='clbl'; l2.textContent='End';
+    ctrl.append(l1,ss,l2,es);
+    row.appendChild(ctrl);
+
+    if(p.id==='spot'){
+      const trow=document.createElement('div'); trow.className='topic-row';
+      const tlbl=document.createElement('span'); tlbl.className='clbl'; tlbl.textContent='Spotlight topic / focus area (optional)';
+      const tin=document.createElement('input'); tin.type='text'; tin.className='topic-input';
+      tin.placeholder='e.g. Staffing Challenges, AI in Education…'; tin.value=s.topic||'';
+      tin.oninput=()=>{s.topic=tin.value;};
+      trow.append(tlbl,tin); row.appendChild(trow);
+    }
+
+    if(p.pricing==='cpm'){
+      const irow=document.createElement('div'); irow.style.cssText='display:flex;align-items:center;gap:6px;width:100%;padding-top:4px;flex-wrap:wrap';
+      const il=document.createElement('span'); il.className='clbl'; il.textContent='Impressions';
+      const ii=document.createElement('input'); ii.type='number'; ii.min=0; ii.step=10000; ii.value=s.impressions||100000; ii.style.width='90px'; ii.style.fontSize='12px'; ii.style.border='1px solid #cbd5e1'; ii.style.borderRadius='6px'; ii.style.padding='4px 6px';
+      const ic=document.createElement('span'); ic.className='cval'; ic.id='calc-'+p.id;
+      const upd=()=>{
+        const imp=parseInt(ii.value)||0;
+        const tot=Math.round(imp*p.cpm/1000);
+        ic.textContent='= $'+tot.toLocaleString();
+        s.impressions=imp; s.unitPrice=tot; recalc();
+      };
+      ii.oninput=upd; upd();
+      irow.append(il,ii,ic); row.appendChild(irow);
+    } else {
+      const ql=document.createElement('span'); ql.className='clbl'; ql.textContent='Qty';
+      const qi=document.createElement('input'); qi.type='number'; qi.min=1; qi.value=s.qty||1; qi.style.width='46px'; qi.style.fontSize='12px'; qi.style.border='1px solid #cbd5e1'; qi.style.borderRadius='6px'; qi.style.padding='4px 6px';
+      qi.oninput=()=>{s.qty=parseInt(qi.value)||1;recalc();};
+      ctrl.append(ql,qi);
+    }
+    addPriceOverride(row,p,s);
+  } else {
+    if(p.id==='eml'){
+      const s=sel[p.id];
+      if(!s.sends) s.sends=restore&&s.sends?s.sends:[{date:'',topic:''}];
+      const wrap=document.createElement('div'); wrap.style.cssText='display:flex;flex-direction:column;gap:0;width:100%;padding-top:4px';
+      const renderSends=()=>{
+        wrap.innerHTML='';
+        s.sends.forEach((send,i)=>{
+          const entry=document.createElement('div'); entry.className='send-entry';
+          const hdr=document.createElement('div'); hdr.className='send-entry-hdr';
+          const lbl=document.createElement('span'); lbl.className='clbl'; lbl.textContent='Send '+(i+1);
+          const delBtn=document.createElement('button'); delBtn.className='send-del'; delBtn.textContent='✕';
+          delBtn.onclick=()=>{s.sends.splice(i,1);if(!s.sends.length)s.sends=[{date:'',topic:''}];s.qty=s.sends.length;recalc();renderSends();};
+          hdr.append(lbl,delBtn);
+          const dateIn=document.createElement('input'); dateIn.type='text'; dateIn.className='topic-input';
+          dateIn.placeholder='Date (e.g. Oct 14, 2026)'; dateIn.value=send.date||'';
+          dateIn.oninput=()=>{send.date=dateIn.value;};
+          const topicIn=document.createElement('input'); topicIn.type='text'; topicIn.className='topic-input';
+          topicIn.placeholder='Topic / audience focus (optional)'; topicIn.value=send.topic||'';
+          topicIn.oninput=()=>{send.topic=topicIn.value;};
+          entry.append(hdr,dateIn,topicIn); wrap.appendChild(entry);
+        });
+        const addBtn=document.createElement('button'); addBtn.className='add-send-btn'; addBtn.textContent='+ Add another send';
+        addBtn.onclick=()=>{s.sends.push({date:'',topic:''});s.qty=s.sends.length;recalc();renderSends();};
+        wrap.appendChild(addBtn);
+        s.qty=s.sends.length; recalc();
+      };
+      renderSends();
+      row.appendChild(wrap);
+      addPriceOverride(row,p,sel[p.id]); return;
+    }
+
+    if(p.id==='quiz'){
+      const s=sel[p.id];
+      const wrap=document.createElement('div'); wrap.style.cssText='display:flex;flex-direction:column;gap:4px;width:100%;padding-top:4px';
+      const pillRow=document.createElement('div'); pillRow.className='mpills';
+      campMonths.forEach(mk=>{
+        const pill=document.createElement('span');
+        pill.className='mpill'+(s.months[0]===mk?' on':'');
+        pill.textContent=ml(mk);
+        pill.onclick=()=>{
+          pillRow.querySelectorAll('.mpill').forEach(p=>p.classList.remove('on'));
+          pill.classList.add('on');
+          s.months=[mk]; s.qty=1; recalc();
+        };
+        pillRow.appendChild(pill);
+      });
+      const trow=document.createElement('div'); trow.className='topic-row';
+      const tlbl=document.createElement('span'); tlbl.className='clbl'; tlbl.textContent='Quiz topic / subject area (optional)';
+      const tin=document.createElement('input'); tin.type='text'; tin.className='topic-input';
+      tin.placeholder='e.g. Science of Reading, AI in K-12…'; tin.value=s.topic||'';
+      tin.oninput=()=>{s.topic=tin.value;};
+      trow.append(tlbl,tin);
+      wrap.append(pillRow,trow); row.appendChild(wrap);
+      addPriceOverride(row,p,sel[p.id]); return;
+    }
+
+    if(p.cal && CAL[p.cal]){
+      const avail=CAL[p.cal].filter(e=>campMonths.includes(e.m));
+      if(avail.length){
+        const wrap=document.createElement('div'); wrap.style.cssText='display:flex;flex-direction:column;gap:2px;width:100%';
+        const s=sel[p.id];
+        avail.forEach(ev=>{
+          const r=document.createElement('div'); r.className='calopt';
+          const c=document.createElement('input'); c.type='checkbox';
+          const wasChecked=s.instances.some(i=>i.d===ev.d);
+          if(restore&&wasChecked)c.checked=true;
+          c.onchange=()=>{
+            if(c.checked)s.instances.push(ev);
+            else s.instances=s.instances.filter(i=>i!==ev);
+            s.qty=Math.max(s.instances.length,1);
+            recalc();
+          };
+          const lbl=document.createElement('label');
+          lbl.textContent=ml(ev.m)+' — '+ev.d+' — '+ev.t;
+          lbl.style.cursor='pointer';
+          r.append(c,lbl); wrap.appendChild(r);
+        });
+        row.appendChild(wrap);
+        addPriceOverride(row,p,sel[p.id]); return;
+      }
+    }
+    const s=sel[p.id];
+    const ql=document.createElement('span'); ql.className='clbl'; ql.textContent='Qty';
+    const qi=document.createElement('input'); qi.type='number'; qi.min=1; qi.value=s.qty||1; qi.style.width='46px'; qi.style.fontSize='12px'; qi.style.border='1px solid #cbd5e1'; qi.style.borderRadius='6px'; qi.style.padding='4px 6px';
+    qi.oninput=()=>{s.qty=parseInt(qi.value)||1;recalc();};
+    ctrl.append(ql,qi);
+    row.appendChild(ctrl);
+
+    const pills=document.createElement('div'); pills.className='mpills';
+    campMonths.forEach(mk=>{
+      const pill=document.createElement('span');
+      pill.className='mpill'+(s.months.includes(mk)?' on':'');
+      pill.textContent=ml(mk);
+      pill.onclick=()=>{
+        pill.classList.toggle('on');
+        if(pill.classList.contains('on'))s.months.push(mk);
+        else s.months=s.months.filter(m=>m!==mk);
+        s.qty=Math.max(s.months.length,1);
+        qi.value=s.qty;
+        recalc();
+      };
+      pills.appendChild(pill);
+    });
+    row.appendChild(pills);
+    addPriceOverride(row,p,s); return;
+  }
+}
+
+function recalc(){
+  let t=0;
+  Object.values(sel).forEach(s=>{
+    if(s.prod.pricing==='cpm') t+=s.unitPrice||0;
+    else t+=(s.qty||1)*(s.rateOverride!=null?s.rateOverride:s.prod.rate||0);
+  });
+  document.getElementById('f-total').textContent='$'+Math.round(t).toLocaleString();
+}
+
+function toggleRepOther(){
+  const s=document.getElementById('f-rep-sel');
+  const other=document.getElementById('f-rep-other');
+  other.style.display=s.value==='other'?'block':'none';
+}
+
+function getRep(){
+  const s=document.getElementById('f-rep-sel');
+  if(s.value==='other') return document.getElementById('f-rep-other').value.trim()||'Rep';
+  return s.value;
+}
+
+function submit(){
+  const client=document.getElementById('f-client').value.trim()||'Client';
+  const rep=getRep();
+  const startMonth=document.getElementById('f-start').value;
+  const duration=parseInt(document.getElementById('f-dur').value);
+  const includeIntro=document.getElementById('f-intro').checked;
+  const months=campMonths.map(mk=>ml(mk));
+
+  const products=Object.values(sel).map(s=>{
+    const p=s.prod;
+    const effectiveRate=s.rateOverride!=null?s.rateOverride:p.rate||0;
+    const o={id:p.id,name:p.name,type:p.type,pricing:p.pricing,
+              qty:s.qty||1,unitPrice:p.pricing==='cpm'?s.unitPrice||0:effectiveRate,
+              lineTotal:p.pricing==='cpm'?s.unitPrice||0:(s.qty||1)*effectiveRate,slides:p.slides};
+    if(s.rateOverride!=null&&s.rateOverride!==p.rate) o.rateOverride=s.rateOverride;
+    if(p.pricing==='cpm'){o.impressions=s.impressions||0;o.cpm=p.cpm;o.lineTotal=s.unitPrice||0;}
+    if(p.type==='D')o.schedule={start:ml(s.startMo||campMonths[0]),end:ml(s.endMo||campMonths[campMonths.length-1])};
+    if(s.topic) o.topic=s.topic;
+    if(p.id==='eml'&&s.sends&&s.sends.length) o.instances=s.sends.map((sd,i)=>{
+      const raw=sd.date||('Send '+(i+1));
+      // Parse "Oct 14, 2026" → "Oct '26" so the grid column lookup succeeds.
+      // Strategy: match a 3-letter month abbreviation + 4-digit year anywhere in the string.
+      let month=raw;
+      const m=raw.match(/([A-Za-z]{3})[^0-9]*(\d{4})/);
+      if(m){
+        const abbr=m[1].charAt(0).toUpperCase()+m[1].slice(1).toLowerCase();
+        const yr=m[2].slice(2); // "2026" → "26"
+        const candidate=abbr+" '"+yr; // "Oct '26"
+        if(ML.includes(candidate)) month=candidate;
+      }
+      return {date:raw,topic:sd.topic||'',month};
+    });
+    else if(s.instances&&s.instances.length) o.instances=s.instances.map(e=>({date:e.d,topic:e.t,month:ml(e.m)}));
+    else if(s.months&&s.months.length) o.instances=s.months.map(mk=>({date:ml(mk),topic:s.topic||'',month:ml(mk)}));
+    return o;
+  });
+
+  const totalInvestment=products.reduce((a,p)=>a+p.lineTotal,0);
+  const payload={client,rep,budget:document.getElementById('f-budget').value,
+                 startMonth,duration,includeIntro,months,products,
+                 totalInvestment:Math.round(totalInvestment)};
+
+  pendingPayload='BUILD_PROPOSAL: '+JSON.stringify(payload);
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('copy-btn').textContent='Copy to Clipboard';
+  document.getElementById('copy-btn').classList.remove('copied');
+}
+
+function copyPayload(){
+  navigator.clipboard.writeText(pendingPayload).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='✓ Copied!';
+    btn.classList.add('copied');
+  });
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+}
+
+buildStartOpts();
+renderAll();
+document.getElementById('f-start').onchange=renderAll;
+document.getElementById('f-dur').onchange=renderAll;
+</script>
+</body>
+</html>
